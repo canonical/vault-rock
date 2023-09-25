@@ -41,9 +41,3 @@ jobs:
       - name: Integration tests
         id: test_image
         run: cd tests && tox -e integration
-
-      - uses: actions/upload-artifact@v3
-        if: steps.test_image.outcome == 'success'
-        with:
-          name: rock
-          path: ${{ steps.rockcraft.outputs.rock }}
