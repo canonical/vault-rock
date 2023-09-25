@@ -1,0 +1,20 @@
+name: vault
+base: ubuntu:22.04
+build-base: ubuntu:22.04
+version: "1.14.3"
+summary: A ROCK container image for Vault
+description: |
+  A ROCK container image for Vault, a tool for secrets management, encryption as a service, and privileged access management.
+license: Apache-2.0
+platforms:
+  amd64:
+
+parts:
+
+  vault:
+    plugin: go
+    source: https://github.com/hashicorp/vault.git
+    source-tag: v1.14.3
+    source-type: git
+    build-snaps:
+      - go/1.20/stable

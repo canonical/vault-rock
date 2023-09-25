@@ -1,0 +1,24 @@
+name: Main
+
+on:
+  push:
+  schedule:
+    - cron: '0 8 * * 2'
+
+jobs:
+
+  build:
+    uses: ./.github/workflows/build-rock.yaml
+
+  scan:
+    needs: build-rock
+    uses: ./.github/workflows/scan-rock.yaml
+
+  integration-tests:
+    needs: build
+    uses: ./.github/workflows/integration_tests.yaml
+
+  publish:
+    if: github.ref_name == 'main'
+    needs: [scan-rock, integration-tests]
+    uses: ./.github/workflows/publish-rock.yaml

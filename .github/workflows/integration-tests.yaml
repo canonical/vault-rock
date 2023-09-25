@@ -1,0 +1,32 @@
+name: Integration tests
+
+on:
+  workflow_call:
+
+jobs:
+  integration-tests:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - uses: canonical/craft-actions/rockcraft-pack@main
+        id: rockcraft
+
+      - name: Install Skopeo
+        run: |
+          sudo snap install skopeo --edge --devmode
+
+      - name: Import the image to Docker registry
+        run: |
+          sudo skopeo --insecure-policy copy oci-archive:${{ steps.rockcraft.outputs.rock }} docker-daemon:vault:1.14.3
+
+      - name: Integration tests
+        id: test_image
+        run: cd tests && tox -e integration
+
+      - uses: actions/upload-artifact@v3
+        if: steps.test_image.outcome == 'success'
+        with:
+          name: rock
+          path: ${{ steps.rockcraft.outputs.rock }}
