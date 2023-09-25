@@ -19,6 +19,6 @@ jobs:
     uses: ./.github/workflows/integration-tests.yaml
 
   publish:
-#    if: github.ref_name == 'main'
+    if: github.ref_name == 'main'
     needs: [scan, build, integration-tests]
     uses: ./.github/workflows/publish-rock.yaml
