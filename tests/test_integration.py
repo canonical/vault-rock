@@ -19,11 +19,13 @@ def wait_for_vault_to_be_available(timeout: int = 30):
     initial_time = time.time()
     vault = Vault("http://localhost:8200")
     while time.time() - initial_time < timeout:
-        if vault.is_api_available():
-            logger.info("Vault API is available")
-            return True
-        else:
-            time.sleep(1)
+        try:
+            if vault.is_api_available():
+                logger.info("Vault API is available")
+                return True
+        except:
+            pass
+        time.sleep(1)
     raise TimeoutError("Vault is not available after {} seconds".format(timeout))
 
 
