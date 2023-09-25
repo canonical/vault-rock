@@ -33,7 +33,7 @@ jobs:
             --insecure-policy \
             copy \
             oci-archive:"${rock_file}" \
-            docker-daemon:"ghcr.io/canonical/${image_name}:${version}"
+            docker-daemon:"${image_name}-rock:test"
 
       - name: Install tox
         run: pip install tox

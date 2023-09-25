@@ -23,7 +23,7 @@ def wait_for_vault_to_be_available(timeout: int = 30):
             if vault.is_api_available():
                 logger.info("Vault API is available")
                 return True
-        except:
+        except Exception:
             pass
         time.sleep(1)
     raise TimeoutError("Vault is not available after {} seconds".format(timeout))
@@ -35,7 +35,7 @@ class TestVaultRock(unittest.TestCase):
     def setUp(self):
         """Starts a Vault container."""
         subprocess.check_call(
-            "docker run -d -p 8200:8200 -v ${PWD}/config:/vault/config --entrypoint /bin/bash vault:1.14.3 -c 'vault server -config=/vault/config/config.hcl'",  # noqa: E501
+            "docker run -d -p 8200:8200 -v ${PWD}/config:/vault/config --entrypoint /bin/bash vault-rock:test -c 'vault server -config=/vault/config/config.hcl'",  # noqa: E501
             shell=True,
         )
 
