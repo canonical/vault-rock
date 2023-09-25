@@ -16,5 +16,7 @@ parts:
     source: https://github.com/hashicorp/vault.git
     source-tag: v1.14.3
     source-type: git
+    stage:
+      - bin/vault
     build-snaps:
       - go/1.20/stable

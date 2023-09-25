@@ -21,6 +21,9 @@ jobs:
         run: |
           sudo skopeo --insecure-policy copy oci-archive:${{ steps.rockcraft.outputs.rock }} docker-daemon:vault:1.14.3
 
+      - name: Install tox
+        run: pip install tox
+
       - name: Integration tests
         id: test_image
         run: cd tests && tox -e integration
