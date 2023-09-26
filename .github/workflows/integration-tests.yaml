@@ -1,0 +1,43 @@
+name: Integration tests
+
+on:
+  workflow_call:
+
+jobs:
+  integration-tests:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install skopeo
+        run: |
+          sudo snap install --devmode --channel edge skopeo
+
+      - name: Install yq
+        run: |
+          sudo snap install yq
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: rock
+
+      - name: Import
+        run: |
+          image_name="$(yq '.name' rockcraft.yaml)"
+          echo "image_name=${image_name}" >> $GITHUB_ENV
+          version="$(yq '.version' rockcraft.yaml)"
+          echo "version=${version}" >> $GITHUB_ENV
+          rock_file=$(ls *.rock | tail -n 1)
+          sudo skopeo \
+            --insecure-policy \
+            copy \
+            oci-archive:"${rock_file}" \
+            docker-daemon:"${image_name}-rock:test"
+
+      - name: Install tox
+        run: pip install tox
+
+      - name: Integration tests
+        id: test_image
+        run: cd tests && tox -e integration
