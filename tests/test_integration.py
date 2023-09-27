@@ -35,7 +35,7 @@ class TestVaultRock(unittest.TestCase):
     def setUp(self):
         """Starts a Vault container."""
         subprocess.check_call(
-            "docker run -d -p 8200:8200 -v ${PWD}/config:/vault/config --entrypoint /bin/bash vault-rock:test -c 'vault server -config=/vault/config/config.hcl'",  # noqa: E501
+            "docker run -d -p 8200:8200 vault-rock:test ",
             shell=True,
         )
 
