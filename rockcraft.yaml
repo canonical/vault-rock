@@ -1,5 +1,5 @@
 name: vault
-base: ubuntu:22.04
+base: bare
 build-base: ubuntu:22.04
 version: "1.14.3"
 summary: A ROCK container image for Vault
@@ -8,6 +8,12 @@ description: |
 license: Apache-2.0
 platforms:
   amd64:
+
+services:
+  vault:
+    command: vault server -config=/vault/config/config.hcl
+    override: replace
+    startup: enabled
 
 parts:
 
@@ -20,3 +26,14 @@ parts:
       - bin/vault
     build-snaps:
       - go/1.20/stable
+
+  default-config:
+    plugin: dump
+    source: ./config
+    organize:
+      config.hcl: /vault/config/config.hcl
+
+  packages:
+    plugin: nil
+    stage-packages:
+      - ca-certificates

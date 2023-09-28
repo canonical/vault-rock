@@ -1,6 +1,6 @@
 # vault-rock
 
-A ROCK image for Vault.
+A distroless ROCK image for Vault.
 
 ## Usage
 
