@@ -36,4 +36,5 @@ parts:
   packages:
     plugin: nil
     stage-packages:
-      - ca-certificates
+      - ca-certificates_data
+      - libc6_libs
