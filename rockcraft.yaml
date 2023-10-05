@@ -25,7 +25,7 @@ parts:
     stage:
       - bin/vault
     build-snaps:
-      - go/1.20/stable
+      - go/1.21/stable
 
   default-config:
     plugin: dump
