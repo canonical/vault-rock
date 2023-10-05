@@ -4,6 +4,7 @@
 
 ```bash
 rockcraft pack -v
-sudo skopeo --insecure-policy copy oci-archive:vault_1.14.3_amd64.rock docker-daemon:vault:1.14.3
-docker run vault:1.14.3
+vault_version=$(yq '.version' rockcraft.yaml)
+sudo skopeo --insecure-policy copy oci-archive:vault_${vault_version}_amd64.rock docker-daemon:vault:${vault_version}
+docker run vault:${vault_version}
 ```
