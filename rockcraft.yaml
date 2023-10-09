@@ -22,10 +22,14 @@ parts:
     source: https://github.com/hashicorp/vault.git
     source-tag: v1.15.0
     source-type: git
+    source-depth: 1
     stage:
       - bin/vault
     build-snaps:
       - go/1.21/stable
+    override-build: |
+      craftctl default
+      strip -s $CRAFT_PART_INSTALL/bin/*
 
   default-config:
     plugin: dump
