@@ -1,6 +1,6 @@
 name: vault
 base: bare
-build-base: ubuntu:22.04
+build-base: ubuntu@22.04
 version: "1.15.2"
 summary: A ROCK container image for Vault
 description: |
