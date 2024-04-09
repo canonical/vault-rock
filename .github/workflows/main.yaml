@@ -1,12 +1,14 @@
-name: Main
+name: Protected Branches
 
 on:
   pull_request:
     branches:
       - main
+      - release-*
   push:
     branches:
       - main
+      - release-*
   schedule:
     - cron: '0 8 * * 2'
 
@@ -28,6 +30,6 @@ jobs:
     uses: ./.github/workflows/integration-tests.yaml
 
   publish:
-    if: github.ref_name == 'main'
+    if: github.ref_name == 'main' || startsWith(github.ref_name, 'release-')
     needs: [scan, build, integration-tests]
     uses: ./.github/workflows/publish-rock.yaml
