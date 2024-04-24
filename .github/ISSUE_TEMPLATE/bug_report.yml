@@ -23,7 +23,7 @@ body:
       label: To Reproduce
       description: >
         Please provide a step-by-step instruction of how to reproduce the behavior. Make sure to include
-        Kuberetes files, kubectl commands, and any other relevant information.
+        Kubernetes files, kubectl commands, and any other relevant information.
       placeholder: |
         1. `kubectl apply ...`
         2. `kubectl logs`
