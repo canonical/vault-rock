@@ -1,6 +1,6 @@
 name: vault
 base: bare
-build-base: ubuntu@22.04
+build-base: ubuntu@24.04
 version: "1.16.2"
 summary: A ROCK container image for Vault
 description: |
@@ -43,3 +43,4 @@ parts:
     stage-packages:
       - ca-certificates_data
       - libc6_libs
+      - base-files_lib
