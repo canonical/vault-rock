@@ -1,2 +1,5 @@
 hvac
 requests
+ruff
+pyright
+pytest
