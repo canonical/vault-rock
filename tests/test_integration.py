@@ -7,9 +7,9 @@
 import logging
 import subprocess
 import time
-import requests
-import pytest
 
+import pytest
+import requests
 
 from vault import Vault
 
@@ -33,7 +33,7 @@ def wait_for_vault_to_be_available(timeout: int = 30) -> None:
 
 @pytest.fixture(scope="module")
 def run_container():
-    """Starts a Vault container."""
+    """Start a Vault container."""
     subprocess.check_call(
         "docker run -d -p 8200:8200 vault-rock:test",
         shell=True,
