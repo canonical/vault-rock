@@ -16,10 +16,25 @@ services:
     override: replace
     startup: enabled
 
+package-repositories:
+ - type: apt
+   url: https://deb.nodesource.com/node_20.x
+   components: [main]
+   suites: [focal]
+   key-id: 9FD3B784BC1C6FC31A8A0A1C1655A0AB68576280
+ - type: apt
+   url: https://dl.yarnpkg.com/debian/
+   components: [main]
+   suites: [stable]
+   key-id: 72ECF46A56B4AD39C907BBB71646B01B86E50310
+
 parts:
 
   vault:
     plugin: go
+    go-buildtags:
+      - vault
+      - ui
     source: https://github.com/hashicorp/vault.git
     source-tag: v1.16.2
     source-type: git
@@ -28,7 +43,11 @@ parts:
       - bin/vault
     build-snaps:
       - go/1.21/stable
+    build-packages:
+      - nodejs
+      - yarn
     override-build: |
+      make static-dist
       craftctl default
       strip -s $CRAFT_PART_INSTALL/bin/*
 
