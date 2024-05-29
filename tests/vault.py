@@ -35,11 +35,11 @@ class Vault:
         return initialize_response["root_token"], initialize_response["keys"]
 
     def is_initialized(self) -> bool:
-        """Returns whether Vault is initialized."""
+        """Return whether Vault is initialized."""
         return self._client.sys.is_initialized()
 
     def is_sealed(self) -> bool:
-        """Returns whether Vault is sealed."""
+        """Return whether Vault is sealed."""
         return self._client.sys.is_sealed()
 
     def unseal(self, unseal_keys: List[str]) -> None:
@@ -49,7 +49,7 @@ class Vault:
         logger.info("Vault is unsealed")
 
     def is_api_available(self) -> bool:
-        """Returns whether Vault is available."""
+        """Return whether Vault is available."""
         self._client.sys.read_health_status()
         try:
             self._client.sys.read_health_status()
@@ -58,5 +58,5 @@ class Vault:
         return True
 
     def set_token(self, token: str) -> None:
-        """Sets the Vault token for authentication."""
+        """Set the Vault token for authentication."""
         self._client.token = token
