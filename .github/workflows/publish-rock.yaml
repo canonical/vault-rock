@@ -5,12 +5,10 @@ on:
 
 jobs:
   publish-rock:
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Publish rock
-        uses: canonical/data-platform-workflows/.github/workflows/release_rock.yaml@v22.0.0
-        with:
-          artifact-prefix: ${{ needs.go-build.outputs.artifact-prefix }}
-        permissions:
-          packages: write
-          contents: write
+    name: Publish rock
+    uses: canonical/data-platform-workflows/.github/workflows/release_rock.yaml@v22.0.0
+    with:
+      artifact-prefix: ${{ needs.go-build.outputs.artifact-prefix }}
+    permissions:
+      packages: write
+      contents: write
