@@ -17,19 +17,15 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
-
   build:
     uses: ./.github/workflows/build-rock.yaml
-
   scan:
     needs: build
     uses: ./.github/workflows/scan-rock.yaml
-
   integration-tests:
     needs: build
     uses: ./.github/workflows/integration-tests.yaml
-
   publish:
-    if: github.ref_name == 'main' || startsWith(github.ref_name, 'release-')
+    # if: github.ref_name == 'main' || startsWith(github.ref_name, 'release-')
     needs: [scan, build, integration-tests]
     uses: ./.github/workflows/publish-rock.yaml
