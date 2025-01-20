@@ -1,7 +1,7 @@
 name: vault
 base: bare
 build-base: ubuntu@24.04
-version: "1.17.6"
+version: "1.18.3"
 summary: A ROCK container image for Vault
 description: |
   A ROCK container image for Vault, a tool for secrets management, encryption as a service, and privileged access management.
@@ -36,13 +36,13 @@ parts:
       - vault
       - ui
     source: https://github.com/hashicorp/vault.git
-    source-tag: v1.17.6
+    source-tag: v1.18.3
     source-type: git
     source-depth: 1
     stage:
       - bin/vault
     build-snaps:
-      - go/1.22/stable
+      - go/1.23/stable
     build-packages:
       - nodejs
       - yarn

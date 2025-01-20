@@ -1,6 +1,6 @@
-# vault-rock
+# Vault rock
 
-A distroless ROCK image for Vault.
+A distroless rock image for Vault.
 
 ## Usage
 
