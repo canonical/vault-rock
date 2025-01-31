@@ -19,11 +19,11 @@ concurrency:
 jobs:
 
   build:
-    uses: ./.github/workflows/build-rock.yaml
+    uses: canonical/identity-credentials-workflows/.github/workflows/build-rock.yaml@v0
 
   scan:
     needs: build
-    uses: ./.github/workflows/scan-rock.yaml
+    uses: canonical/identity-credentials-workflows/.github/workflows/scan-rock.yaml@v0
 
   integration-tests:
     needs: build
@@ -32,4 +32,4 @@ jobs:
   publish:
     if: github.ref_name == 'main' || startsWith(github.ref_name, 'release-')
     needs: [scan, build, integration-tests]
-    uses: ./.github/workflows/publish-rock.yaml
+    uses: canonical/identity-credentials-workflows/.github/workflows/publish-rock.yaml@v0
