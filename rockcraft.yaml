@@ -63,3 +63,12 @@ parts:
       - ca-certificates_data
       - libc6_libs
       - base-files_lib
+
+  deb-security-manifest:
+    after:
+      - packages
+    plugin: make
+    source: https://github.com/canonical/rocks-security-manifest
+    source-type: git
+    source-branch: main
+    override-prime: gen_manifest
