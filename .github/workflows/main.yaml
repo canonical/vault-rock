@@ -21,8 +21,20 @@ jobs:
   build:
     uses: canonical/identity-credentials-workflows/.github/workflows/build-rock-multiarch.yaml@v1
 
-  scan:
+  prepare-scan:
     needs: build
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: rock-amd64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rock
+          path: "*.rock"
+
+  scan:
+    needs: prepare-scan
     uses: canonical/identity-credentials-workflows/.github/workflows/scan-rock.yaml@v0
 
   integration-tests:
