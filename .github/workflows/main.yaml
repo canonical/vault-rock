@@ -23,7 +23,7 @@ jobs:
 
   scan:
     needs: build
-    uses: ./.github/workflows/scan-rock.yaml
+    uses: canonical/identity-credentials-workflows/.github/workflows/scan-rock.yaml@v0
 
   integration-tests:
     needs: build
