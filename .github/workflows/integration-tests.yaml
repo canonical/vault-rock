@@ -20,7 +20,7 @@ jobs:
 
       - uses: actions/download-artifact@v6
         with:
-          name: rock
+          name: rock-amd64
 
       - name: Import
         run: |
