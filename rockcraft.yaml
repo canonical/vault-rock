@@ -12,7 +12,7 @@ platforms:
 
 services:
   vault:
-    command: vault server -config=/vault/config/config.hcl
+    command: vault server [ -config=/vault/config/config.hcl ]
     override: replace
     startup: enabled
 
