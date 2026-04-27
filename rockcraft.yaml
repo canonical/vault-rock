@@ -41,7 +41,7 @@ parts:
     build-packages:
       - nodejs
     override-build: |
-      npm install -g pnpm
+      npm install -g pnpm yarn
       make static-dist
       craftctl default
       strip -s $CRAFT_PART_INSTALL/bin/*
