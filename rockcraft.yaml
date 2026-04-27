@@ -1,7 +1,7 @@
 name: vault
 base: bare
 build-base: ubuntu@24.04
-version: "1.19.5"
+version: "2.0.0-test"
 summary: A ROCK container image for Vault
 description: |
   A ROCK container image for Vault, a tool for secrets management, encryption as a service, and privileged access management.
@@ -22,11 +22,6 @@ package-repositories:
    components: [main]
    suites: [nodistro]
    key-id: 6F71F525282841EEDAF851B42F59B5F99B1BE0B4
- - type: apt
-   url: https://dl.yarnpkg.com/debian/
-   components: [main]
-   suites: [stable]
-   key-id: FF7CB5667B542092084BBDC562D54FD4003F6525
 
 parts:
 
@@ -36,17 +31,17 @@ parts:
       - vault
       - ui
     source: https://github.com/hashicorp/vault.git
-    source-tag: v1.19.5
+    source-tag: v2.0.0
     source-type: git
     source-depth: 1
     stage:
       - bin/vault
     build-snaps:
-      - go/1.24/stable
+      - go/1.26/stable
     build-packages:
       - nodejs
-      - yarn
     override-build: |
+      npm install -g pnpm yarn
       make static-dist
       craftctl default
       strip -s $CRAFT_PART_INSTALL/bin/*
