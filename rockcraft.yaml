@@ -19,6 +19,7 @@ services:
 
 package-repositories:
  - type: apt
+   architectures: [amd64, arm64]
    url: https://deb.nodesource.com/node_20.x
    components: [main]
    suites: [nodistro]
@@ -30,7 +31,6 @@ parts:
     plugin: go
     go-buildtags:
       - vault
-      - ui
     source: https://github.com/hashicorp/vault.git
     source-tag: v2.0.0
     source-type: git
@@ -42,9 +42,18 @@ parts:
     build-packages:
       - nodejs
     override-build: |
-      npm install -g pnpm yarn
-      make static-dist
-      craftctl default
+      # Build the web UI on architectures where Node 20 is available.
+      # s390x does not have Node 20 packages (NodeSource does not support s390x),
+      # so the UI is excluded on that platform. Vault remains fully functional
+      # via the CLI and HTTP API without the embedded web UI.
+      if [ "${CRAFT_TARGET_ARCH}" != "s390x" ]; then
+        npm install -g pnpm yarn
+        make static-dist
+        GOTAGS="vault,ui"
+      else
+        GOTAGS="vault"
+      fi
+      CGO_ENABLED=0 go build -tags "${GOTAGS}" -o "${CRAFT_PART_INSTALL}/bin/vault" .
       strip -s $CRAFT_PART_INSTALL/bin/*
 
   default-config:
