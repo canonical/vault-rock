@@ -19,7 +19,25 @@ concurrency:
 jobs:
 
   build:
-    uses: canonical/identity-credentials-workflows/.github/workflows/build-rock-multiarch.yaml@v1
+    strategy:
+      matrix:
+        arch:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: [self-hosted, linux, ARM64, medium, jammy]
+          - arch: s390x
+            runner: [self-hosted-linux-s390x-noble-medium]
+    runs-on: ${{ matrix.arch.runner }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - uses: canonical/craft-actions/rockcraft-pack@main
+        id: rockcraft
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rock-${{ matrix.arch.arch }}
+          path: ${{ steps.rockcraft.outputs.rock }}
 
   prepare-scan:
     needs: build
@@ -44,4 +62,57 @@ jobs:
   publish:
     if: github.ref_name == 'main' || startsWith(github.ref_name, 'release-')
     needs: [scan, build, integration-tests]
-    uses: canonical/identity-credentials-workflows/.github/workflows/publish-rock-multiarch.yaml@v1
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3.5.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install rockcraft
+        run: |
+          sudo snap install rockcraft --classic --channel edge
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: rock-amd64
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: rock-arm64
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: rock-s390x
+
+      - name: Import and push to github package
+        run: |
+          image_name="$(yq '.name' rockcraft.yaml)"
+          version="$(cat version/VERSION)"
+
+          for arch in amd64 arm64 s390x; do
+            rock_file=$(ls *_${arch}.rock | tail -n 1)
+            sudo rockcraft.skopeo \
+              --insecure-policy \
+              copy \
+              oci-archive:"${rock_file}" \
+              docker-daemon:"ghcr.io/canonical/${image_name}:${version}-${arch}"
+            docker push ghcr.io/canonical/${image_name}:${version}-${arch}
+          done
+
+          docker manifest create ghcr.io/canonical/${image_name}:${version} \
+            ghcr.io/canonical/${image_name}:${version}-amd64 \
+            ghcr.io/canonical/${image_name}:${version}-arm64 \
+            ghcr.io/canonical/${image_name}:${version}-s390x
+          docker manifest push ghcr.io/canonical/${image_name}:${version}
+
+          docker manifest create ghcr.io/canonical/${image_name}:latest \
+            ghcr.io/canonical/${image_name}:${version}-amd64 \
+            ghcr.io/canonical/${image_name}:${version}-arm64 \
+            ghcr.io/canonical/${image_name}:${version}-s390x
+          docker manifest push ghcr.io/canonical/${image_name}:latest
