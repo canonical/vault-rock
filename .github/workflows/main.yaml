@@ -18,6 +18,7 @@ concurrency:
 
 permissions:
   contents: read
+  packages: write
   security-events: write
 
 jobs:
@@ -32,32 +33,19 @@ jobs:
             runner: [self-hosted, linux, ARM64, medium, jammy]
           - arch: s390x
             runner: [self-hosted-linux-s390x-noble-medium]
-    runs-on: ${{ matrix.arch.runner }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-      - uses: canonical/craft-actions/rockcraft-pack@main
-        id: rockcraft
-      - uses: actions/upload-artifact@v7
-        with:
-          name: rock-${{ matrix.arch.arch }}
-          path: ${{ steps.rockcraft.outputs.rock }}
-
-  prepare-scan:
-    needs: build
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/download-artifact@v8
-        with:
-          name: rock-amd64
-      - uses: actions/upload-artifact@v7
-        with:
-          name: rock
-          path: "*.rock"
+    uses: canonical/identity-credentials-workflows/.github/workflows/rock-build.yaml@v2.0.5
+    with:
+      path: .
+      arch: ${{ matrix.arch.arch }}
+      runner: ${{ toJson(matrix.arch.runner) }}
 
   scan:
-    needs: prepare-scan
-    uses: canonical/identity-credentials-workflows/.github/workflows/scan-rock.yaml@v1
+    needs: build
+    uses: canonical/identity-credentials-workflows/.github/workflows/rock-scan.yaml@v2.0.5
+    with:
+      artifacts-key: ${{ github.sha }}-build-amd64
+      arch: amd64
+      path: .
 
   integration-tests:
     needs: build
@@ -84,15 +72,15 @@ jobs:
 
       - uses: actions/download-artifact@v8
         with:
-          name: rock-amd64
+          name: ${{ github.sha }}-build-amd64
 
       - uses: actions/download-artifact@v8
         with:
-          name: rock-arm64
+          name: ${{ github.sha }}-build-arm64
 
       - uses: actions/download-artifact@v8
         with:
-          name: rock-s390x
+          name: ${{ github.sha }}-build-s390x
 
       - name: Import and push to github package
         run: |
