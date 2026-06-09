@@ -20,7 +20,7 @@ jobs:
 
       - uses: actions/download-artifact@v8
         with:
-          name: rock-amd64
+          name: ${{ github.sha }}-build-amd64
 
       - name: Import
         run: |
