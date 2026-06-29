@@ -33,7 +33,7 @@ jobs:
             runner: [self-hosted, linux, ARM64, medium, jammy]
           - arch: s390x
             runner: [self-hosted-linux-s390x-noble-medium]
-    uses: canonical/identity-credentials-workflows/.github/workflows/rock-build.yaml@v3.1.1
+    uses: canonical/identity-credentials-workflows/.github/workflows/rock-build.yaml@v3.1.2
     with:
       path: .
       arch: ${{ matrix.arch.arch }}
@@ -41,7 +41,7 @@ jobs:
 
   scan:
     needs: build
-    uses: canonical/identity-credentials-workflows/.github/workflows/rock-scan.yaml@v3.1.1
+    uses: canonical/identity-credentials-workflows/.github/workflows/rock-scan.yaml@v3.1.2
     with:
       artifacts-key: ${{ github.sha }}-build-amd64
       arch: amd64
