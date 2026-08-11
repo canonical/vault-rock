@@ -1,0 +1,40 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: [
+    "github>canonical/identity-credentials-workflows//renovate.json5#v3.1.3",
+  ],
+  // Override the shared enabledManagers: this repo has no Terraform or
+  // PEP 621 (pyproject.toml) dependencies to manage. tests/requirements.txt
+  // has no version pins, so the pip_requirements manager would be a no-op
+  // there; add it back if pins are introduced later. A custom manager tracks
+  // the upstream HashiCorp Vault release used to build the rock.
+  enabledManagers: ["github-actions", "custom.regex"],
+  customManagers: [
+    {
+      customType: "regex",
+      managerFilePatterns: ["/^rockcraft\\.yaml$/"],
+      matchStrings: ['version:\\s*"(?<currentValue>[\\d.]+)"\\n'],
+      depNameTemplate: "hashicorp/vault",
+      datasourceTemplate: "github-tags",
+      extractVersionTemplate: "^v(?<version>.*)$",
+    },
+    {
+      customType: "regex",
+      managerFilePatterns: ["/^rockcraft\\.yaml$/"],
+      matchStrings: ["source-tag:\\s*(?<currentValue>v[\\d.]+)\\n"],
+      depNameTemplate: "hashicorp/vault",
+      datasourceTemplate: "github-tags",
+    },
+  ],
+  packageRules: [
+    {
+      matchDatasources: ["github-tags"],
+      matchDepNames: ["hashicorp/vault"],
+      // Only track patch releases of the currently packaged major.minor,
+      // matching the previous behavior of manual version bumps.
+      allowedVersions: "/^2\\.0\\.\\d+$/",
+      groupName: "Vault upstream version",
+      commitMessageTopic: "Vault",
+    },
+  ],
+}
